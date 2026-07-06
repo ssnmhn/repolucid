@@ -1,0 +1,40 @@
+name: Free mini-audit request
+description: Point us at a repo. You get a legibility score, 3 concrete findings with file references, and an ARCHITECTURE.md excerpt — free, usually same-day.
+title: "[mini-audit] "
+labels: ["mini-audit"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the interest — this is a real offer, not a lead trap. Public repos get the
+        audit as a reply right here; private repos get it by email after we arrange read-only access.
+  - type: input
+    id: repo
+    attributes:
+      label: Repository URL
+      description: Public URL, or just `org/name` if private (we'll arrange read-only access — you never send us code).
+      placeholder: https://github.com/acme/monorepo
+    validations:
+      required: true
+  - type: textarea
+    id: pain
+    attributes:
+      label: What hurts right now? (optional)
+      placeholder: "onboarding takes forever · our coding agents keep breaking module X · CONTRIBUTING drifted years ago"
+  - type: input
+    id: contact
+    attributes:
+      label: Where should the audit go?
+      description: '"Reply here" is fine for public repos; otherwise an email address.'
+      placeholder: reply here
+    validations:
+      required: true
+  - type: dropdown
+    id: context
+    attributes:
+      label: Team context (optional — helps us calibrate the findings)
+      options:
+        - Startup / company repo
+        - Open-source project I maintain
+        - Agency / inherited codebase
+        - Personal project

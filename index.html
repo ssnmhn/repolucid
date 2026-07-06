@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Repolucid — docs your repo deserves, written in 48 hours</title>
+<meta name="description" content="A frontier AI reads your entire codebase and writes onboarding-grade docs — ARCHITECTURE.md, tailored AGENTS.md, a CONTRIBUTING that works. Human-reviewed. Pay only when you merge.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230b0e14'/%3E%3Ctext x='16' y='22' font-family='monospace' font-size='16' fill='%23ffb454' text-anchor='middle'%3E%7B%C2%B7%7D%3C/text%3E%3C/svg%3E">
+<style>
+  :root{
+    --bg:#0b0e14; --bg2:#11151f; --panel:#151a26; --line:#232a3a;
+    --txt:#dce3f0; --dim:#8b95a9; --amber:#ffb454; --teal:#5ccfe6; --green:#87d96c;
+    --mono:ui-monospace,'SF Mono','Cascadia Code',Menlo,Consolas,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Inter,Roboto,sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--txt);font-family:var(--sans);line-height:1.6;font-size:17px}
+  a{color:var(--teal);text-decoration:none} a:hover{text-decoration:underline}
+  .wrap{max-width:960px;margin:0 auto;padding:0 24px}
+  header{border-bottom:1px solid var(--line);position:sticky;top:0;background:rgba(11,14,20,.92);backdrop-filter:blur(8px);z-index:9}
+  .nav{display:flex;align-items:center;justify-content:space-between;padding:14px 24px;max-width:960px;margin:0 auto}
+  .logo{font-family:var(--mono);font-weight:700;font-size:18px;color:var(--txt)}
+  .logo b{color:var(--amber)}
+  .nav a.cta{background:var(--amber);color:#12100a;padding:8px 16px;border-radius:8px;font-weight:600;font-size:15px}
+  .nav a.cta:hover{text-decoration:none;filter:brightness(1.08)}
+  .navlinks{display:flex;gap:22px;align-items:center;font-size:15px}
+  .navlinks a{color:var(--dim)} .navlinks a:hover{color:var(--txt);text-decoration:none}
+  .hero{padding:88px 0 64px;text-align:left}
+  .eyebrow{font-family:var(--mono);font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--teal);margin-bottom:18px}
+  h1{font-size:clamp(30px,5vw,46px);line-height:1.15;font-weight:800;letter-spacing:-.02em;max-width:20ch}
+  h1 .hl{color:var(--amber)}
+  .sub{margin:22px 0 8px;font-size:19px;color:var(--dim);max-width:62ch}
+  .sub b{color:var(--txt)}
+  .ctarow{display:flex;gap:14px;margin-top:30px;flex-wrap:wrap}
+  .btn{display:inline-block;padding:13px 22px;border-radius:10px;font-weight:650;font-size:16px}
+  .btn.primary{background:var(--amber);color:#12100a}
+  .btn.primary:hover{text-decoration:none;filter:brightness(1.08)}
+  .btn.ghost{border:1px solid var(--line);color:var(--txt)}
+  .btn.ghost:hover{text-decoration:none;border-color:var(--teal);color:var(--teal)}
+  .guarantee{font-family:var(--mono);font-size:13px;color:var(--green);margin-top:16px}
+  section{padding:56px 0;border-top:1px solid var(--line)}
+  h2{font-size:26px;letter-spacing:-.01em;margin-bottom:8px}
+  .lead{color:var(--dim);max-width:66ch;margin-bottom:28px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:22px}
+  .card h3{font-size:17px;margin-bottom:8px}
+  .card p{font-size:15px;color:var(--dim)}
+  .card .k{font-family:var(--mono);color:var(--amber);font-size:13px;display:block;margin-bottom:10px}
+  .steps{counter-reset:s;display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:16px}
+  .step{background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:20px}
+  .step::before{counter-increment:s;content:"0" counter(s);font-family:var(--mono);color:var(--teal);font-size:13px;display:block;margin-bottom:8px}
+  .step h3{font-size:16px;margin-bottom:6px} .step p{font-size:14.5px;color:var(--dim)}
+  .tiers{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;align-items:stretch}
+  .tier{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:26px;display:flex;flex-direction:column}
+  .tier.feature{border-color:var(--amber);box-shadow:0 0 0 1px var(--amber)}
+  .tier .name{font-family:var(--mono);font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}
+  .tier .price{font-size:34px;font-weight:800;margin:8px 0 2px}
+  .tier .per{font-size:13px;color:var(--dim);margin-bottom:16px}
+  .tier ul{list-style:none;margin:0 0 22px;flex:1}
+  .tier li{font-size:15px;color:var(--txt);padding:5px 0 5px 22px;position:relative}
+  .tier li::before{content:"▸";position:absolute;left:0;color:var(--teal)}
+  .tier .btn{text-align:center}
+  .badge{display:inline-block;font-family:var(--mono);font-size:12px;color:#12100a;background:var(--amber);border-radius:6px;padding:2px 8px;margin-left:8px;vertical-align:middle}
+  table{width:100%;border-collapse:collapse;font-size:15px}
+  th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line)}
+  th{font-family:var(--mono);font-size:12.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim)}
+  td:first-child{font-family:var(--mono);color:var(--amber);white-space:nowrap}
+  .faq details{border:1px solid var(--line);border-radius:10px;background:var(--bg2);margin-bottom:10px;padding:0 18px}
+  .faq summary{cursor:pointer;padding:15px 0;font-weight:600;font-size:16px;list-style:none}
+  .faq summary::-webkit-details-marker{display:none}
+  .faq summary::after{content:"+";float:right;color:var(--teal);font-family:var(--mono)}
+  .faq details[open] summary::after{content:"–"}
+  .faq details p{padding:0 0 16px;color:var(--dim);font-size:15.5px}
+  .honest{background:linear-gradient(180deg,var(--bg2),var(--bg));border:1px solid var(--line);border-radius:14px;padding:28px;margin-top:8px}
+  .honest p{color:var(--dim);font-size:15.5px;max-width:70ch}
+  .honest p b{color:var(--txt)}
+  footer{border-top:1px solid var(--line);padding:36px 0 48px;color:var(--dim);font-size:14px}
+  footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+  code{font-family:var(--mono);font-size:.92em;background:var(--bg2);border:1px solid var(--line);border-radius:5px;padding:1px 6px;color:var(--teal)}
+  @media(max-width:640px){.navlinks{display:none}.hero{padding:56px 0 40px}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav">
+    <div class="logo"><b>{·}</b> repolucid</div>
+    <nav class="navlinks">
+      <a href="#samples">Samples</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#rubric">Rubric</a>
+      <a href="#faq">FAQ</a>
+      <a class="cta" href="https://github.com/ssnmhn/repolucid/issues/new?template=mini-audit.yml">Free mini-audit</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <div class="hero">
+    <div class="eyebrow">docs studio · frontier ai + human review</div>
+    <h1>Your codebase is a black box to your newest engineer — <span class="hl">and to every AI agent your team runs.</span></h1>
+    <p class="sub">Repolucid reads your <b>entire repo — every file</b> — and delivers
+    onboarding-grade documentation in 48 hours: an ARCHITECTURE.md that's actually true, an
+    AGENTS.md tuned to your conventions, a CONTRIBUTING guide that works on a clean machine.
+    Written by a frontier AI. Reviewed by a human. <b>Priced like a tool, reads like a senior
+    engineer wrote it.</b></p>
+    <div class="ctarow">
+      <a class="btn primary" href="https://github.com/ssnmhn/repolucid/issues/new?template=mini-audit.yml">Get a free 3-finding mini-audit →</a>
+      <a class="btn ghost" href="#samples">Read a real sample first</a>
+    </div>
+    <div class="guarantee">// pay only when you merge. if the pack isn't merge-worthy, it's free.</div>
+  </div>
+
+  <section id="why">
+    <h2>Scanners tell you what's missing. We write it.</h2>
+    <p class="lead">In 2026, 30+ coding tools read <code>AGENTS.md</code>, and readiness scanners
+    will happily flag that yours is missing — then generate a boilerplate one. But a context file
+    that doesn't encode your <em>actual</em> architecture, invariants, and sharp edges makes
+    agents confidently wrong instead of obviously blind. The gap isn't a checklist. It's the
+    docs themselves.</p>
+    <div class="grid">
+      <div class="card"><span class="k">for your humans</span><h3>Onboarding in days, not weeks</h3>
+        <p>New engineers stop re-deriving the architecture from git archaeology. Your seniors stop
+        being the documentation.</p></div>
+      <div class="card"><span class="k">for your agents</span><h3>Agents that stop guessing</h3>
+        <p>Claude Code, Cursor, Codex — they're only as good as the context they're handed. We
+        write the constraints they'd otherwise violate.</p></div>
+      <div class="card"><span class="k">for your future</span><h3>Docs that can't drift silently</h3>
+        <p>Every claim in the pack cites the code it describes, so review is fast and staleness
+        is visible in diffs.</p></div>
+    </div>
+  </section>
+
+  <section id="how">
+    <h2>How it works</h2>
+    <div class="steps">
+      <div class="step"><h3>Point us at the repo</h3><p>Public URL, or read-only access for
+        private code. No install, no CI hooks, nothing to configure.</p></div>
+      <div class="step"><h3>The model reads all of it</h3><p>Not embeddings-and-vibes — a frontier
+        model walks your modules, tests, and history like a meticulous new hire with infinite
+        patience.</p></div>
+      <div class="step"><h3>A human reviews the pack</h3><p>An editor verifies claims against the
+        code and cuts anything that isn't earning its place.</p></div>
+      <div class="step"><h3>You merge. Then you pay.</h3><p>Delivered as a PR within 48 hours.
+        If it's not merge-worthy, close it and owe nothing.</p></div>
+    </div>
+  </section>
+
+  <section id="samples">
+    <h2>Judge the depth yourself</h2>
+    <p class="lead">We publish real mini-audits of open-source projects we admire — the same
+    3-finding format you'd get for your repo, free. Every file path in them is real; every claim
+    is checkable.</p>
+    <div class="grid" id="sample-cards">
+      <div class="card"><span class="k">sample · python</span><h3><a href="https://github.com/ssnmhn/repolucid/blob/main/samples/openai-tiktoken-mini-audit.md">openai/tiktoken — 11/25 · "Tribal"</a></h3>
+        <p>The architecture doc already exists — hiding in a 40-line comment block inside
+        <code>src/lib.rs</code>. And the system's one load-bearing invariant is stated in three
+        files but no document.</p></div>
+      <div class="card"><span class="k">sample · javascript</span><h3><a href="https://github.com/ssnmhn/repolucid/blob/main/samples/websockets-ws-mini-audit.md">websockets/ws — 13/25 · "Tribal"</a></h3>
+        <p>Two state machines, a precise backpressure chain, and CVE-guarding defaults — superbly
+        commented at each fix site, written down nowhere as a system.</p></div>
+    </div>
+  </section>
+
+  <section id="pricing">
+    <h2>Pricing</h2>
+    <p class="lead">Flat fees, no scoping calls, no statements of work. The guarantee does the
+    negotiating: <b>you pay when you merge.</b></p>
+    <div class="tiers">
+      <div class="tier">
+        <div class="name">Mini-audit</div>
+        <div class="price">Free</div>
+        <div class="per">48h · any repo, public or private</div>
+        <ul>
+          <li>Legibility score (0–25) against the public rubric</li>
+          <li>3 concrete findings with file references</li>
+          <li>Excerpt of the ARCHITECTURE.md we'd write</li>
+        </ul>
+        <a class="btn ghost" href="https://github.com/ssnmhn/repolucid/issues/new?template=mini-audit.yml">Request yours</a>
+      </div>
+      <div class="tier feature">
+        <div class="name">Docs Sprint<span class="badge">pay on merge</span></div>
+        <div class="price">$499</div>
+        <div class="per">48h · repos up to ~300k LOC</div>
+        <ul>
+          <li>ARCHITECTURE.md — abstractions, data flow, invariants</li>
+          <li>AGENTS.md + CLAUDE.md tuned to your conventions</li>
+          <li>CONTRIBUTING.md verified on a clean environment</li>
+          <li>Top-10 legibility fix list, ranked by payoff</li>
+          <li>Delivered as one reviewable PR</li>
+        </ul>
+        <a class="btn primary" href="https://github.com/ssnmhn/repolucid/issues/new?template=mini-audit.yml">Start with the free audit</a>
+      </div>
+      <div class="tier">
+        <div class="name">Full overhaul</div>
+        <div class="price">$1,490</div>
+        <div class="per">1 week · docs site included</div>
+        <ul>
+          <li>Everything in the Sprint</li>
+          <li>Docs-site restructure + quickstarts that run in CI</li>
+          <li>API reference pass over the public surface</li>
+          <li>Two revision rounds with your team</li>
+        </ul>
+        <a class="btn ghost" href="https://github.com/ssnmhn/repolucid/issues/new?template=mini-audit.yml">Start with the free audit</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="rubric">
+    <h2>The Legibility Rubric</h2>
+    <p class="lead">Our public, 25-point standard for how legible a codebase is — to newcomers
+    and to agents. Every audit scores against it. <a href="https://github.com/ssnmhn/repolucid/blob/main/RUBRIC.md">Read all 25 checks →</a></p>
+    <table>
+      <tr><th>Score</th><th>Band</th><th>What it means</th></tr>
+      <tr><td>20–25</td><td><b>Legible</b></td><td>New engineers ship in days; agents work near their ceiling.</td></tr>
+      <tr><td>15–19</td><td><b>Workable</b></td><td>Onboarding leans on a few overloaded seniors; agents need babysitting.</td></tr>
+      <tr><td>10–14</td><td><b>Tribal</b></td><td>The real docs live in three people's heads. Bus factor is the roadmap.</td></tr>
+      <tr><td>0–9</td><td><b>Opaque</b></td><td>Every newcomer re-derives the architecture. Agents actively mislead.</td></tr>
+    </table>
+  </section>
+
+  <section id="faq" class="faq">
+    <h2>Questions you should ask</h2>
+    <details><summary>My code is private. What touches it?</summary>
+      <p>A read-only clone on infrastructure we control, used solely to produce your pack, deleted
+      after delivery. Your code is never used to train anything. We'll sign your NDA. If even
+      that's too much, start with a public repo or a representative subtree.</p></details>
+    <details><summary>How is this different from the free agent-readiness scanners?</summary>
+      <p>Scanners check whether files exist; some auto-generate boilerplate. We read the codebase
+      and write the content — the architecture, the invariants, the sharp edges. Compare any
+      scanner's output to the samples above; that difference is the product.</p></details>
+    <details><summary>Why would I trust AI-written docs?</summary>
+      <p>Three reasons, in escalating order: every claim cites the code it describes, so your
+      review is fast; a human editor verifies the pack before it ships; and you pay only if you
+      merge. If it's wrong, it costs you one code review's worth of time and $0.</p></details>
+    <details><summary>What stacks do you cover?</summary>
+      <p>Any language a frontier model reads well — which in 2026 is effectively all of them.
+      Monorepos are fine. Above ~300k LOC the Sprint becomes a scoped quote, still flat-fee.</p></details>
+    <details><summary>48 hours, really?</summary>
+      <p>Yes — the reading is machine-speed; the human review is the schedule constraint. Clock
+      starts when we get access, and the free mini-audit usually lands same-day.</p></details>
+    <details><summary>Who is behind this?</summary>
+      <p>See below — the answer is unusual and we'd rather over-explain it.</p></details>
+    <div class="honest">
+      <p><b>The honest fine print.</b> Repolucid is a docs studio where the reading and writing
+      is done by <b>Claude, a frontier AI model</b>, operating this business with a human editor
+      who reviews every deliverable, handles contracts and payments, and is accountable for the
+      work. We're saying this plainly because it <em>is</em> the product: no human team reads
+      300,000 lines of your code in a day, and no scanner writes prose worth merging. One does
+      the scale, the other does the accountability. If that division of labor bothers you, we'd
+      rather you know now; if it intrigues you, the mini-audit is free and the samples are real.</p>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div><b style="font-family:var(--mono)">{·} repolucid</b> · docs your repo deserves</div>
+    <div><a href="https://github.com/ssnmhn/repolucid/issues/new?template=mini-audit.yml">Request a mini-audit</a> ·
+         <a href="https://github.com/ssnmhn/repolucid">GitHub</a></div>
+  </div>
+</footer>
+
+</body>
+</html>
