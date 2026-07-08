@@ -1,0 +1,51 @@
+name: Buy-Side DD request
+description: Free red-flag scan of a listing, or a paid buy-side technical DD memo
+title: "[Buy-Side] <deal codename or listing name>"
+labels: ["buyside-dd"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Buying an online business and want to know what the code is really worth? Start here.
+        **This form is public** — use a deal codename and don't paste anything confidential.
+        For NDA'd material, write "will share privately" and we'll reply with a private channel
+        before you send anything.
+  - type: dropdown
+    id: tier
+    attributes:
+      label: What do you need?
+      options:
+        - Free Red-Flag Scan (from the public listing)
+        - Buy-Side Memo ($499 — full codebase, 48h)
+        - Deep Memo ($999 — larger/multi-repo + Q&A round)
+      default: 0
+    validations:
+      required: true
+  - type: input
+    id: listing
+    attributes:
+      label: Listing URL or deal description
+      description: Acquire/Flippa/broker listing link, or one line on the business if off-market.
+    validations:
+      required: true
+  - type: input
+    id: stage
+    attributes:
+      label: Deal stage
+      placeholder: e.g., "browsing", "made an offer", "under LOI, 21 days of exclusivity left"
+    validations:
+      required: true
+  - type: textarea
+    id: access
+    attributes:
+      label: Code access status
+      description: >
+        Do you (or will you) have read-only repo access? If the seller hasn't granted it yet,
+        say so — we'll include the exact request wording that usually works.
+    validations:
+      required: true
+  - type: textarea
+    id: worries
+    attributes:
+      label: What are you most worried about? (optional)
+      description: The thing keeping you up at night about this deal. We'll look there first.

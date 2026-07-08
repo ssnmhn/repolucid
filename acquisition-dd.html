@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Repolucid Buy-Side — technical due diligence for non-technical buyers</title>
+<meta name="description" content="Buying a small online business? A frontier AI reads the entire codebase and tells you, in plain English, what you'd actually own — code health, founder dependence, licensing landmines, and the 15 questions to ask the seller. 48 hours, $499.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230b0e14'/%3E%3Ctext x='16' y='22' font-family='monospace' font-size='16' fill='%23ffb454' text-anchor='middle'%3E%7B%C2%B7%7D%3C/text%3E%3C/svg%3E">
+<style>
+  :root{
+    --bg:#0b0e14; --bg2:#11151f; --panel:#151a26; --line:#232a3a;
+    --txt:#dce3f0; --dim:#8b95a9; --amber:#ffb454; --teal:#5ccfe6; --green:#87d96c;
+    --mono:ui-monospace,'SF Mono','Cascadia Code',Menlo,Consolas,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Inter,Roboto,sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--txt);font-family:var(--sans);line-height:1.6;font-size:17px}
+  a{color:var(--teal);text-decoration:none} a:hover{text-decoration:underline}
+  .wrap{max-width:960px;margin:0 auto;padding:0 24px}
+  header{border-bottom:1px solid var(--line);position:sticky;top:0;background:rgba(11,14,20,.92);backdrop-filter:blur(8px);z-index:9}
+  .nav{display:flex;align-items:center;justify-content:space-between;padding:14px 24px;max-width:960px;margin:0 auto}
+  .logo{font-family:var(--mono);font-weight:700;font-size:18px;color:var(--txt)}
+  .logo b{color:var(--amber)}
+  .navlinks{display:flex;gap:22px;align-items:center;font-size:15px}
+  .navlinks a{color:var(--dim)} .navlinks a:hover{color:var(--txt);text-decoration:none}
+  .nav a.cta{background:var(--amber);color:#12100a;padding:8px 16px;border-radius:8px;font-weight:600;font-size:15px}
+  .nav a.cta:hover{text-decoration:none;filter:brightness(1.08)}
+  .hero{padding:88px 0 64px}
+  .eyebrow{font-family:var(--mono);font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--teal);margin-bottom:18px}
+  h1{font-size:clamp(30px,5vw,46px);line-height:1.15;font-weight:800;letter-spacing:-.02em;max-width:22ch}
+  h1 .hl{color:var(--amber)}
+  .sub{margin:22px 0 8px;font-size:19px;color:var(--dim);max-width:62ch}
+  .sub b{color:var(--txt)}
+  .ctarow{display:flex;gap:14px;margin-top:30px;flex-wrap:wrap}
+  .btn{display:inline-block;padding:13px 22px;border-radius:10px;font-weight:650;font-size:16px}
+  .btn.primary{background:var(--amber);color:#12100a}
+  .btn.primary:hover{text-decoration:none;filter:brightness(1.08)}
+  .btn.ghost{border:1px solid var(--line);color:var(--txt)}
+  .btn.ghost:hover{text-decoration:none;border-color:var(--teal);color:var(--teal)}
+  .guarantee{font-family:var(--mono);font-size:13px;color:var(--green);margin-top:16px}
+  section{padding:56px 0;border-top:1px solid var(--line)}
+  h2{font-size:26px;letter-spacing:-.01em;margin-bottom:8px}
+  .lead{color:var(--dim);max-width:66ch;margin-bottom:28px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:22px}
+  .card h3{font-size:17px;margin-bottom:8px}
+  .card p{font-size:15px;color:var(--dim)}
+  .card .k{font-family:var(--mono);color:var(--amber);font-size:13px;display:block;margin-bottom:10px}
+  .tiers{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;align-items:stretch}
+  .tier{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:26px;display:flex;flex-direction:column}
+  .tier.feature{border-color:var(--amber);box-shadow:0 0 0 1px var(--amber)}
+  .tier .name{font-family:var(--mono);font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}
+  .tier .price{font-size:34px;font-weight:800;margin:8px 0 2px}
+  .tier .per{font-size:13px;color:var(--dim);margin-bottom:16px}
+  .tier ul{list-style:none;margin:0 0 22px;flex:1}
+  .tier li{font-size:15px;color:var(--txt);padding:5px 0 5px 22px;position:relative}
+  .tier li::before{content:"▸";position:absolute;left:0;color:var(--teal)}
+  .tier .btn{text-align:center}
+  .faq details{border:1px solid var(--line);border-radius:10px;background:var(--bg2);margin-bottom:10px;padding:0 18px}
+  .faq summary{cursor:pointer;padding:15px 0;font-weight:600;font-size:16px;list-style:none}
+  .faq summary::-webkit-details-marker{display:none}
+  .faq summary::after{content:"+";float:right;color:var(--teal);font-family:var(--mono)}
+  .faq details[open] summary::after{content:"–"}
+  .faq details p{padding:0 0 16px;color:var(--dim);font-size:15.5px}
+  .honest{background:linear-gradient(180deg,var(--bg2),var(--bg));border:1px solid var(--line);border-radius:14px;padding:28px;margin-top:8px}
+  .honest p{color:var(--dim);font-size:15.5px;max-width:70ch}
+  .honest p b{color:var(--txt)}
+  footer{border-top:1px solid var(--line);padding:36px 0 48px;color:var(--dim);font-size:14px}
+  footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+  @media(max-width:640px){.navlinks{display:none}.hero{padding:56px 0 40px}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav">
+    <div class="logo"><b>{·}</b> repolucid <span style="color:var(--dim);font-weight:400">/ buy-side</span></div>
+    <nav class="navlinks">
+      <a href="index.html">Docs sprints</a>
+      <a href="#sample">Sample memo</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#faq">FAQ</a>
+      <a class="cta" href="https://github.com/ssnmhn/repolucid/issues/new?template=buyside-dd.yml">Free red-flag scan</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <div class="hero">
+    <div class="eyebrow">buy-side technical due diligence · plain english</div>
+    <h1>You're about to spend $150k on a codebase <span class="hl">you can't read.</span></h1>
+    <p class="sub">Buying a SaaS, app, or online business on Acquire, Flippa, or through a
+    broker? The seller's P&L gets a spreadsheet; the <b>asset itself — the code — gets a
+    shrug</b>, because traditional tech due diligence starts at $15,000. Repolucid Buy-Side
+    reads the <b>entire codebase</b> and tells you in plain English what you'd actually own:
+    code health, founder dependence, licensing landmines, running costs, and the 15 questions
+    to ask the seller. <b>In 48 hours, for $499.</b></p>
+    <div class="ctarow">
+      <a class="btn primary" href="https://github.com/ssnmhn/repolucid/issues/new?template=buyside-dd.yml">Get a free red-flag scan →</a>
+      <a class="btn ghost" href="#sample">Read a real sample memo</a>
+    </div>
+    <div class="guarantee">// decision-useful or free. if the memo doesn't materially inform your decision, you don't pay.</div>
+  </div>
+
+  <section id="why">
+    <h2>The diligence gap in every small deal</h2>
+    <p class="lead">On a $50k–$500k acquisition, the economics of hiring a CTO-for-a-day never
+    work — so non-technical buyers verify revenue, skim the demo, and pray about the code.
+    That's where the surprises live:</p>
+    <div class="grid">
+      <div class="card"><span class="k">the classic one</span><h3>Founder-shaped code</h3><p>One person wrote 95% of it, documented nothing, and is about to leave with the earn-out. We measure this — commit history doesn't lie.</p></div>
+      <div class="card"><span class="k">the expensive one</span><h3>License landmines</h3><p>A single copyleft dependency, or "proprietary" code that's a fork of someone's GPL project, can change what you're allowed to do with your own product.</p></div>
+      <div class="card"><span class="k">the quiet one</span><h3>Maintenance debt</h3><p>Abandoned frameworks, no tests, five years of "temporary" fixes. Fine until your first must-ship change. Priced into the deal — or into your next year.</p></div>
+    </div>
+  </section>
+
+  <section id="sample">
+    <h2>Read the sample memo first</h2>
+    <p class="lead">We ran the full Buy-Side analysis on <a href="https://github.com/umami-software/umami">Umami</a>,
+    a widely respected open-source analytics product — chosen precisely because its code is
+    public, so you can verify every claim we make. (Umami is not for sale and has no
+    connection to us; it's a demonstration on a codebase we admire.)</p>
+    <div class="grid">
+      <div class="card"><span class="k">sample · full memo</span><h3>Umami — buy-side technical DD memo</h3><p>The one-page verdict, what you'd actually own, founder dependence measured from git history, licensing scan, running costs, and the 15 seller questions — all in plain English.</p><p style="margin-top:12px"><a href="samples/umami-buyside-sample-dd.md">Read the sample memo →</a></p></div>
+      <div class="card"><span class="k">how we work</span><h3>Every claim cites its evidence</h3><p>File paths, commit counts, dependency manifests — each finding points at something you (or any engineer you ever hire) can check. No vibes, no jargon without a translation.</p></div>
+    </div>
+  </section>
+
+  <section id="pricing">
+    <h2>Pricing</h2>
+    <p class="lead">Fixed fees, no hourly meters. NDA-friendly — we sign yours. Payment after
+    delivery, backed by the guarantee.</p>
+    <div class="tiers">
+      <div class="tier">
+        <div class="name">Red-Flag Scan</div>
+        <div class="price">Free</div>
+        <div class="per">from the public listing · 24h</div>
+        <ul>
+          <li>We read the listing + stack description</li>
+          <li>3 sharpest risks visible from outside</li>
+          <li>3 questions to ask before your LOI</li>
+        </ul>
+        <a class="btn ghost" href="https://github.com/ssnmhn/repolucid/issues/new?template=buyside-dd.yml">Request free scan</a>
+      </div>
+      <div class="tier feature">
+        <div class="name">Buy-Side Memo</div>
+        <div class="price">$499</div>
+        <div class="per">codebases up to ~75k lines · 48h</div>
+        <ul>
+          <li>Entire codebase read, plain-English memo</li>
+          <li>Verdict page: green / yellow / red flags</li>
+          <li>Founder dependence, licensing, run costs</li>
+          <li>The 15 questions to ask the seller</li>
+          <li>Decision-useful or free</li>
+        </ul>
+        <a class="btn primary" href="https://github.com/ssnmhn/repolucid/issues/new?template=buyside-dd.yml">Request memo</a>
+      </div>
+      <div class="tier">
+        <div class="name">Deep Memo</div>
+        <div class="price">$999</div>
+        <div class="per">larger codebases / multi-repo · 4 days</div>
+        <ul>
+          <li>Everything in the Buy-Side Memo</li>
+          <li>Infra, data & third-party account posture</li>
+          <li>Review of the seller's written answers</li>
+          <li>One follow-up Q&A round included</li>
+        </ul>
+        <a class="btn ghost" href="https://github.com/ssnmhn/repolucid/issues/new?template=buyside-dd.yml">Request deep memo</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="honest">
+    <h2>Read this before you rely on us</h2>
+    <div class="honest">
+      <p><b>Repolucid is operated by a frontier AI</b> (Anthropic's Claude) with a human
+      principal who owns quality and signs the NDAs. That's not a gimmick; it's the unit
+      economics — it's the only way full-codebase diligence exists at $499.</p>
+      <p style="margin-top:12px"><b>This is a technology assessment, not legal, financial, or
+      investment advice</b>, and it doesn't replace confirmatory diligence on revenue, contracts,
+      or taxes. We tell you what's true about the code; the decision — and the lawyers — stay
+      yours.</p>
+      <p style="margin-top:12px"><b>Access:</b> we work from a read-only copy of the repo
+      (seller grant or your data-room copy), process it via Anthropic's API (no training on
+      your data), and delete everything after delivery. Confirmation in writing on request.</p>
+    </div>
+  </section>
+
+  <section id="faq" class="faq">
+    <h2>FAQ</h2>
+    <details><summary>I'm under LOI and the clock is ticking. How fast, really?</summary>
+      <p>48 hours from repo access for the $499 memo, four days for the Deep Memo. Rush needs
+      are exactly why this service exists — say so in the request and we'll confirm the
+      timeline before you commit anything.</p></details>
+    <details><summary>The seller won't share the code before closing. Now what?</summary>
+      <p>Common and solvable: sellers routinely grant read-only access under NDA during
+      exclusivity — it's a standard DD request, and a seller who refuses it entirely is
+      itself a signal. We'll give you the exact wording to ask with, and the free Red-Flag
+      Scan works from the public listing alone.</p></details>
+    <details><summary>How can an AI's opinion be worth $499?</summary>
+      <p>It reads every file — something no human does at any price point you'd pay on a small
+      deal — and each claim cites evidence you can verify or hand to any engineer later. Then
+      the guarantee does the rest: if the memo doesn't materially inform your decision, you
+      don't pay. Read the <a href="samples/umami-buyside-sample-dd.md">Umami sample</a> and
+      judge the depth yourself.</p></details>
+    <details><summary>Will you tell me whether to buy?</summary>
+      <p>We'll tell you what's true about the technology, rank the risks, and arm you with the
+      seller questions. The buy decision weighs price, market, and your plans — that's yours.
+      What we promise: you won't be surprised by the code after closing.</p></details>
+    <details><summary>What about the rest of diligence — financials, contracts, churn?</summary>
+      <p>Out of scope, on purpose; use your accountant and lawyer there. We cover the one
+      pillar the usual small-deal team can't: the asset's actual code, infra posture, and the
+      technical claims in the listing.</p></details>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div>repolucid buy-side — technical DD in plain english · a <a href="index.html">Repolucid</a> product</div>
+    <div><a href="samples/umami-buyside-sample-dd.md">Sample memo</a> · <a href="https://github.com/ssnmhn/repolucid">GitHub</a> · sister studio: <a href="https://ssnmhn.github.io/plotlucid/">Plotlucid</a></div>
+  </div>
+</footer>
+
+</body>
+</html>
